@@ -33,7 +33,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.asList(
-                "https://www.mlmusik.com/", // deployed frontend
+                "https://ytnafrica.owellgraphics.com", // deployed frontend
                 "http://localhost:8282",     // local backend dev
                 "https://mlmusik.com",     // frontend domain
                 "http://localhost:3000"      // local frontend dev port
