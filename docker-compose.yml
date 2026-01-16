@@ -4,9 +4,9 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    container_name: mlmusik-postgres
+    container_name: ytnafrica-postgres
     environment:
-      POSTGRES_DB: mlmusik
+      POSTGRES_DB: ytnafrica
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Kalimbwejoel
     ports:
@@ -19,19 +19,19 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - mlmusik-network
+      - ytnafrica-network
 
   # Spring Boot Backend
   backend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: mlmusik-backend
+    container_name: ytnafrica-backend
     ports:
-      - "8080:8080"
+      - "8282:8282"
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mlmusik
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ytnafrica
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: Kalimbwejoel
       JAVA_OPTS: "-Xms256m -Xmx1024m"
@@ -41,13 +41,13 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - mlmusik-network
+      - ytnafrica-network
     restart: unless-stopped
 
 volumes:
   postgres_data:
 
 networks:
-  mlmusik-network:
+  ytnafrica-network:
     driver: bridge
 

@@ -62,7 +62,7 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-The API will be available at: `http://localhost:8080/api`
+The API will be available at: `http://localhost:8282/api`
 
 ### File Storage
 
@@ -76,7 +76,7 @@ The application creates the following directories automatically:
 
 ### Base URL
 ```
-http://localhost:8080/api
+http://localhost:8282/api
 ```
 
 ### Admin Endpoints
@@ -354,7 +354,7 @@ POST /songs/{id}/share
 ```json
 {
     "success": true,
-    "shareableUrl": "http://localhost:8080/api/songs/1",
+    "shareableUrl": "http://localhost:8282/api/songs/1",
     "song": {
         "id": 1,
         "shares": 1,
@@ -418,7 +418,7 @@ Form Data:
 3. **Select `postman_collection.json`** from the backend directory
 4. **Set Environment Variable**:
    - Variable: `base_url`
-   - Value: `http://localhost:8080/api`
+   - Value: `http://localhost:8282/api`
 
 ### Testing Album Upload
 
@@ -479,7 +479,7 @@ Form Data:
 
 #### Upload Album with Multiple Songs
 ```bash
-curl -X POST http://localhost:8080/api/albums/upload \
+curl -X POST http://localhost:8282/api/albums/upload \
   -F "title=Greatest Hits 2024" \
   -F "artist=The Weekend" \
   -F "coverArt=@/path/to/cover.jpg" \
@@ -501,7 +501,7 @@ curl -X POST http://localhost:8080/api/albums/upload \
 
 #### Upload Single Track
 ```bash
-curl -X POST http://localhost:8080/api/songs/upload \
+curl -X POST http://localhost:8282/api/songs/upload \
   -F "title=Single Track" \
   -F "artist=Artist Name" \
   -F "featuredArtists=Featured Artist" \
@@ -512,12 +512,12 @@ curl -X POST http://localhost:8080/api/songs/upload \
 
 #### Play Song
 ```bash
-curl -X POST http://localhost:8080/api/songs/1/play
+curl -X POST http://localhost:8282/api/songs/1/play
 ```
 
 #### Download Song
 ```bash
-curl -X GET http://localhost:8080/api/songs/1/download \
+curl -X GET http://localhost:8282/api/songs/1/download \
   -o downloaded_song.mp3
 ```
 

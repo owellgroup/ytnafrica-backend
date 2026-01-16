@@ -94,13 +94,13 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-The API will be available at: `http://localhost:8080/api`
+The API will be available at: `http://localhost:8282/api`
 
 ## API Documentation
 
 ### Base URL
 ```
-http://localhost:8080/api
+http://localhost:8282/api
 ```
 
 ### Main Endpoints
@@ -170,7 +170,7 @@ Form Data:
 ## Testing with Postman
 
 1. Import `postman_collection.json` into Postman
-2. Set environment variable `base_url` to `http://localhost:8080/api`
+2. Set environment variable `base_url` to `http://localhost:8282/api`
 3. Follow the workflows in `API_GUIDE.md`
 
 ## File Storage

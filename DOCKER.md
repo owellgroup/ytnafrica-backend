@@ -1,6 +1,6 @@
 # Docker Setup Guide
 
-This guide explains how to build and run the MLMusik backend using Docker.
+This guide explains how to build and run the YTN Africa backend using Docker.
 
 ## Prerequisites
 
@@ -25,33 +25,33 @@ docker-compose down
 docker-compose down -v
 ```
 
-The backend will be available at: `http://localhost:8080/api`
+The backend will be available at: `http://localhost:8282/api`
 
 ## Manual Docker Build
 
 ### 1. Build the Docker Image
 
 ```bash
-docker build -t mlmusik-backend:latest .
+docker build -t ytnafrica-backend:latest .
 ```
 
 ### 2. Run the Container
 
 ```bash
 docker run -d \
-  --name mlmusik-backend \
-  -p 8080:8080 \
-  -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/mlmusik \
+  --name ytnafrica-backend \
+  -p 8282:8282 \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/ytnafrica \
   -e SPRING_DATASOURCE_USERNAME=postgres \
   -e SPRING_DATASOURCE_PASSWORD=your_password \
   -v $(pwd)/uploads:/app/uploads \
-  mlmusik-backend:latest
+  ytnafrica-backend:latest
 ```
 
 ### 3. View Logs
 
 ```bash
-docker logs -f mlmusik-backend
+docker logs -f ytnafrica-backend
 ```
 
 ## Environment Variables
@@ -75,15 +75,15 @@ The `/app/uploads` directory is mounted as a volume to persist uploaded files:
 1. **Database**: Use a managed PostgreSQL service or separate container
 2. **Secrets**: Use Docker secrets or environment files for sensitive data
 3. **Resource Limits**: Set appropriate memory/CPU limits
-4. **Health Checks**: The container exposes port 8080 for health checks
+4. **Health Checks**: The container exposes port 8282 for health checks
 5. **Logging**: Configure log aggregation for production
 
 ## Troubleshooting
 
 ### Container won't start
-- Check logs: `docker logs mlmusik-backend`
+- Check logs: `docker logs ytnafrica-backend`
 - Verify database connection settings
-- Ensure port 8080 is not already in use
+- Ensure port 8282 is not already in use
 
 ### Database connection errors
 - Verify PostgreSQL is running and accessible
@@ -92,5 +92,5 @@ The `/app/uploads` directory is mounted as a volume to persist uploaded files:
 
 ### File upload issues
 - Ensure upload directory has proper permissions
-- Check volume mount is working: `docker exec mlmusik-backend ls -la /app/uploads`
+- Check volume mount is working: `docker exec ytnafrica-backend ls -la /app/uploads`
 

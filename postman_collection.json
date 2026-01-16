@@ -513,7 +513,7 @@
 							"host": ["{{base_url}}"],
 							"path": ["songs", "1", "share"]
 						},
-						"description": "Increment the share count and get a shareable URL.\n\n**Sample Response:**\n```json\n{\n    \"success\": true,\n    \"shareableUrl\": \"http://localhost:8080/api/songs/1\",\n    \"song\": {\n        \"id\": 1,\n        \"shares\": 1,\n        ...\n    }\n}\n```"
+						"description": "Increment the share count and get a shareable URL.\n\n**Sample Response:**\n```json\n{\n    \"success\": true,\n    \"shareableUrl\": \"http://localhost:8282/api/songs/1\",\n    \"song\": {\n        \"id\": 1,\n        \"shares\": 1,\n        ...\n    }\n}\n```"
 					},
 					"response": []
 				},
@@ -538,7 +538,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost:8080/api",
+			"value": "http://localhost:8282/api",
 			"type": "string"
 		}
 	]
