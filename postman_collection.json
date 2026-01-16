@@ -1,0 +1,545 @@
+{
+	"info": {
+		"_postman_id": "mlmusik-api-collection-v2",
+		"name": "MLMusik Music Streaming API - Complete Collection",
+		"description": "Complete API collection for MLMusik Music Streaming System with all endpoints, sample data, and examples",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "mlmusik"
+	},
+	"item": [
+		{
+			"name": "Admin APIs",
+			"item": [
+				{
+					"name": "1. Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 401\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 401]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.test(\"Login successful\", function () {",
+									"        pm.expect(jsonData.success).to.eql(true);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@mlmusik.com\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/login",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "login"]
+						},
+						"description": "Admin login endpoint. Returns admin details if credentials are correct.\n\n**Sample Request:**\n```json\n{\n    \"email\": \"admin@mlmusik.com\",\n    \"password\": \"admin123\"\n}\n```\n\n**Success Response (200):**\n```json\n{\n    \"success\": true,\n    \"message\": \"Login successful\",\n    \"admin\": {\n        \"id\": 1,\n        \"email\": \"admin@mlmusik.com\",\n        \"createdAt\": \"2024-01-01T10:00:00\"\n    }\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Create Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@mlmusik.com\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin",
+							"host": ["{{base_url}}"],
+							"path": ["admin"]
+						},
+						"description": "Create a new admin account.\n\n**Sample Request:**\n```json\n{\n    \"email\": \"admin@mlmusik.com\",\n    \"password\": \"admin123\"\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Get All Admins",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin",
+							"host": ["{{base_url}}"],
+							"path": ["admin"]
+						},
+						"description": "Retrieve all admin accounts."
+					},
+					"response": []
+				},
+				{
+					"name": "4. Get Admin By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "1"]
+						},
+						"description": "Get admin details by ID. Replace `1` with the actual admin ID."
+					},
+					"response": []
+				},
+				{
+					"name": "5. Update Admin",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"updated@mlmusik.com\",\n    \"password\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "1"]
+						},
+						"description": "Update admin details. Replace `1` with the actual admin ID."
+					},
+					"response": []
+				},
+				{
+					"name": "6. Delete Admin",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "1"]
+						},
+						"description": "Delete an admin account. Replace `1` with the actual admin ID."
+					},
+					"response": []
+				}
+			],
+			"description": "Admin management endpoints for authentication and account management."
+		},
+		{
+			"name": "Album APIs",
+			"item": [
+				{
+					"name": "1. Upload Album with Multiple Songs",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Greatest Hits 2024",
+									"type": "text",
+									"description": "Album title"
+								},
+								{
+									"key": "artist",
+									"value": "The Weekend",
+									"type": "text",
+									"description": "Album artist name"
+								},
+								{
+									"key": "coverArt",
+									"type": "file",
+									"src": [],
+									"description": "Cover art image (3000x3000 JPG or PNG)"
+								},
+								{
+									"key": "songTitles",
+									"value": "Blinding Lights",
+									"type": "text",
+									"description": "Song 1 title"
+								},
+								{
+									"key": "songTitles",
+									"value": "Save Your Tears",
+									"type": "text",
+									"description": "Song 2 title"
+								},
+								{
+									"key": "songArtists",
+									"value": "The Weekend",
+									"type": "text",
+									"description": "Song 1 artist"
+								},
+								{
+									"key": "songArtists",
+									"value": "The Weekend",
+									"type": "text",
+									"description": "Song 2 artist"
+								},
+								{
+									"key": "songFeaturedArtists",
+									"value": "Ariana Grande",
+									"type": "text",
+									"description": "Song 1 featured artists (optional)"
+								},
+								{
+									"key": "songFeaturedArtists",
+									"value": "",
+									"type": "text",
+									"description": "Song 2 featured artists (optional, empty if none)"
+								},
+								{
+									"key": "songProducers",
+									"value": "Max Martin",
+									"type": "text",
+									"description": "Song 1 producer"
+								},
+								{
+									"key": "songProducers",
+									"value": "Oscar Holter",
+									"type": "text",
+									"description": "Song 2 producer"
+								},
+								{
+									"key": "songTrackNumbers",
+									"value": "1",
+									"type": "text",
+									"description": "Song 1 track number"
+								},
+								{
+									"key": "songTrackNumbers",
+									"value": "2",
+									"type": "text",
+									"description": "Song 2 track number"
+								},
+								{
+									"key": "mp3Files",
+									"type": "file",
+									"src": [],
+									"description": "Song 1 MP3 file"
+								},
+								{
+									"key": "mp3Files",
+									"type": "file",
+									"src": [],
+									"description": "Song 2 MP3 file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/albums/upload",
+							"host": ["{{base_url}}"],
+							"path": ["albums", "upload"]
+						},
+						"description": "Upload a complete album with multiple songs in one request.\n\n**Requirements:**\n- Cover art must be 3000x3000 pixels (JPG or PNG)\n- All song arrays must have the same length\n- Each song requires: title, artist, producer, track number, and MP3 file\n- Featured artists are optional for each song\n- The album cover art will be automatically embedded into each MP3 file\n\n**Form Data Structure:**\n- `title`: Album title (single value)\n- `artist`: Album artist (single value)\n- `coverArt`: Cover art image file (single file)\n- `songTitles`: Array of song titles (add multiple entries with same key)\n- `songArtists`: Array of song artists (add multiple entries with same key)\n- `songFeaturedArtists`: Array of featured artists, optional (add multiple entries with same key, can be empty)\n- `songProducers`: Array of producers (add multiple entries with same key)\n- `songTrackNumbers`: Array of track numbers (add multiple entries with same key)\n- `mp3Files`: Array of MP3 files (add multiple files with same key)\n\n**Important:** In Postman, to add multiple values:\n1. Click the key field\n2. Add the same key multiple times\n3. Each entry represents one song\n4. The order matters - first songTitles entry matches first songArtists entry, etc.\n\n**Sample Response:**\n```json\n{\n    \"success\": true,\n    \"message\": \"Album with songs uploaded successfully\",\n    \"album\": {\n        \"id\": 1,\n        \"title\": \"Greatest Hits 2024\",\n        \"artist\": \"The Weekend\",\n        \"coverArtPath\": \"./uploads/cover-art/uuid.jpg\",\n        \"totalViews\": 0,\n        \"totalDownloads\": 0,\n        \"createdAt\": \"2024-01-01T10:00:00\",\n        \"songs\": [\n            {\n                \"id\": 1,\n                \"title\": \"Blinding Lights\",\n                \"artist\": \"The Weekend\",\n                \"featuredArtists\": \"Ariana Grande\",\n                \"producer\": \"Max Martin\",\n                \"trackNumber\": 1\n            },\n            {\n                \"id\": 2,\n                \"title\": \"Save Your Tears\",\n                \"artist\": \"The Weekend\",\n                \"producer\": \"Oscar Holter\",\n                \"trackNumber\": 2\n            }\n        ]\n    }\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get All Albums",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/albums",
+							"host": ["{{base_url}}"],
+							"path": ["albums"]
+						},
+						"description": "Retrieve all albums in the system."
+					},
+					"response": []
+				},
+				{
+					"name": "3. Get Album By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/albums/1",
+							"host": ["{{base_url}}"],
+							"path": ["albums", "1"]
+						},
+						"description": "Get album details by ID, including all songs in the album."
+					},
+					"response": []
+				},
+				{
+					"name": "4. Update Album",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Album Title\",\n    \"artist\": \"Updated Artist Name\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/albums/1",
+							"host": ["{{base_url}}"],
+							"path": ["albums", "1"]
+						},
+						"description": "Update album title and artist. Replace `1` with the actual album ID."
+					},
+					"response": []
+				},
+				{
+					"name": "5. Delete Album",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/albums/1",
+							"host": ["{{base_url}}"],
+							"path": ["albums", "1"]
+						},
+						"description": "Delete an album and all its songs. Replace `1` with the actual album ID."
+					},
+					"response": []
+				}
+			],
+			"description": "Album management endpoints. Upload complete albums with multiple songs in one request."
+		},
+		{
+			"name": "Song APIs",
+			"item": [
+				{
+					"name": "1. Upload Single Track",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Shape of You",
+									"type": "text",
+									"description": "Song title"
+								},
+								{
+									"key": "artist",
+									"value": "Ed Sheeran",
+									"type": "text",
+									"description": "Song artist"
+								},
+								{
+									"key": "featuredArtists",
+									"value": "Justin Bieber",
+									"type": "text",
+									"description": "Featured artists (comma-separated, optional)"
+								},
+								{
+									"key": "producer",
+									"value": "Steve Mac",
+									"type": "text",
+									"description": "Producer name"
+								},
+								{
+									"key": "coverArt",
+									"type": "file",
+									"src": [],
+									"description": "Cover art image (3000x3000 JPG or PNG)"
+								},
+								{
+									"key": "mp3File",
+									"type": "file",
+									"src": [],
+									"description": "MP3 audio file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/songs/upload",
+							"host": ["{{base_url}}"],
+							"path": ["songs", "upload"]
+						},
+						"description": "Upload a single track (not part of an album).\n\n**Requirements:**\n- Cover art must be 3000x3000 pixels\n- MP3 file will have cover art automatically embedded\n- Featured artists are optional\n\n**Sample Response:**\n```json\n{\n    \"success\": true,\n    \"message\": \"Single track uploaded successfully\",\n    \"song\": {\n        \"id\": 1,\n        \"title\": \"Shape of You\",\n        \"artist\": \"Ed Sheeran\",\n        \"featuredArtists\": \"Justin Bieber\",\n        \"producer\": \"Steve Mac\",\n        \"trackNumber\": null,\n        \"coverArtPath\": \"./uploads/cover-art/uuid.jpg\",\n        \"filePath\": \"./uploads/songs/uuid.mp3\",\n        \"views\": 0,\n        \"likes\": 0,\n        \"dislikes\": 0,\n        \"downloads\": 0,\n        \"shares\": 0,\n        \"album\": null\n    }\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get All Songs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/songs",
+							"host": ["{{base_url}}"],
+							"path": ["songs"]
+						},
+						"description": "Retrieve all songs in the system (both album songs and single tracks)."
+					},
+					"response": []
+				},
+				{
+					"name": "3. Get Song By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/songs/1",
+							"host": ["{{base_url}}"],
+							"path": ["songs", "1"]
+						},
+						"description": "Get song details by ID, including statistics (views, likes, downloads, etc.)."
+					},
+					"response": []
+				},
+				{
+					"name": "4. Get Songs By Album",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/songs/album/1",
+							"host": ["{{base_url}}"],
+							"path": ["songs", "album", "1"]
+						},
+						"description": "Get all songs belonging to a specific album. Replace `1` with the album ID."
+					},
+					"response": []
+				},
+				{
+					"name": "5. Update Song",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Song Title\",\n    \"artist\": \"Updated Artist\",\n    \"featuredArtists\": \"Updated Featured Artists\",\n    \"producer\": \"Updated Producer\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/songs/1",
+							"host": ["{{base_url}}"],
+							"path": ["songs", "1"]
+						},
+						"description": "Update song metadata. Replace `1` with the actual song ID."
+					},
+					"response": []
+				},
+				{
+					"name": "6. Delete Song",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/songs/1",
+							"host": ["{{base_url}}"],
+							"path": ["songs", "1"]
+						},
+						"description": "Delete a song. Replace `1` with the actual song ID."
+					},
+					"response": []
+				},
+				{
+					"name": "7. Play Song (Increment Views)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/songs/1/play",
+							"host": ["{{base_url}}"],
+							"path": ["songs", "1", "play"]
+						},
+						"description": "Increment the view count for a song. Call this endpoint when a user plays a song.\n\n**Sample Response:**\n```json\n{\n    \"success\": true,\n    \"song\": {\n        \"id\": 1,\n        \"title\": \"Shape of You\",\n        \"views\": 1,\n        ...\n    }\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "8. Like Song",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/songs/1/like",
+							"host": ["{{base_url}}"],
+							"path": ["songs", "1", "like"]
+						},
+						"description": "Increment the like count for a song."
+					},
+					"response": []
+				},
+				{
+					"name": "9. Dislike Song",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/songs/1/dislike",
+							"host": ["{{base_url}}"],
+							"path": ["songs", "1", "dislike"]
+						},
+						"description": "Increment the dislike count for a song."
+					},
+					"response": []
+				},
+				{
+					"name": "10. Share Song",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/songs/1/share",
+							"host": ["{{base_url}}"],
+							"path": ["songs", "1", "share"]
+						},
+						"description": "Increment the share count and get a shareable URL.\n\n**Sample Response:**\n```json\n{\n    \"success\": true,\n    \"shareableUrl\": \"http://localhost:8080/api/songs/1\",\n    \"song\": {\n        \"id\": 1,\n        \"shares\": 1,\n        ...\n    }\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "11. Download Song",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/songs/1/download",
+							"host": ["{{base_url}}"],
+							"path": ["songs", "1", "download"]
+						},
+						"description": "Download the MP3 file with embedded cover art. Automatically increments download count.\n\n**Note:** This endpoint returns a binary file (MP3), not JSON."
+					},
+					"response": []
+				}
+			],
+			"description": "Song management and interaction endpoints. Upload single tracks, manage songs, and track user interactions."
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080/api",
+			"type": "string"
+		}
+	]
+}
