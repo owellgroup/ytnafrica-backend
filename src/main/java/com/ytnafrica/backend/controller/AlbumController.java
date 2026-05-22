@@ -23,6 +23,7 @@ public class AlbumController {
     public ResponseEntity<Map<String, Object>> uploadAlbum(
             @RequestParam("title") String title,
             @RequestParam("artist") String artist,
+            @RequestParam(value = "artistId", required = false) Long artistId,
             @RequestParam("coverArt") MultipartFile coverArt,
             @RequestParam("songTitles") String[] songTitles,
             @RequestParam("songArtists") String[] songArtists,
@@ -52,7 +53,7 @@ public class AlbumController {
             Album album = albumService.createAlbumWithSongs(
                     title, artist, coverArt, 
                     songTitles, songArtists, songFeaturedArtists, 
-                    songProducers, songTrackNumbers, mp3Files);
+                    songProducers, songTrackNumbers, mp3Files, artistId);
             
             response.put("success", true);
             response.put("message", "Album with songs uploaded successfully");
@@ -77,9 +78,15 @@ public class AlbumController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/artist/{artistId}")
+    public ResponseEntity<List<Album>> getAlbumsByArtist(@PathVariable Long artistId) {
+        return ResponseEntity.ok(albumService.getAlbumsByArtistId(artistId));
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Album> updateAlbum(@PathVariable Long id, @RequestBody Map<String, String> albumData) {
-        Album album = albumService.updateAlbum(id, albumData.get("title"), albumData.get("artist"));
+    public ResponseEntity<Album> updateAlbum(@PathVariable Long id, @RequestBody Map<String, Object> albumData) {
+        Long artistId = albumData.get("artistId") != null ? Long.valueOf(albumData.get("artistId").toString()) : null;
+        Album album = albumService.updateAlbum(id, (String) albumData.get("title"), (String) albumData.get("artist"), artistId);
         if (album != null) {
             return ResponseEntity.ok(album);
         }
@@ -87,9 +94,16 @@ public class AlbumController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAlbum(@PathVariable Long id) {
-        albumService.deleteAlbum(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteAlbum(
+            @PathVariable Long id,
+            @RequestParam(value = "artistId", required = false) Long artistId) {
+        boolean deleted = artistId != null
+                ? albumService.deleteAlbumForArtist(id, artistId)
+                : albumService.deleteAlbum(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
 

@@ -3,6 +3,7 @@ package com.ytnafrica.backend.service;
 import com.ytnafrica.backend.model.Song;
 import com.ytnafrica.backend.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,10 @@ public class SongService {
     @Autowired
     private MP3MetadataService mp3MetadataService;
 
+    @Autowired
+    @Lazy
+    private ArtistService artistService;
+
     public List<Song> getAllSongs() {
         return songRepository.findAll();
     }
@@ -33,7 +38,9 @@ public class SongService {
     }
 
     public Song createSingleTrack(String title, String artist, String featuredArtists,
-                                 String producer, MultipartFile coverArt, MultipartFile mp3File) throws Exception {
+                                 String producer, MultipartFile coverArt, MultipartFile mp3File,
+                                 Long artistId) throws Exception {
+        String resolvedArtist = artistService.resolveArtistName(artistId, artist);
         // Store cover art (returns filename only)
         String coverArtFilename = fileStorageService.storeCoverArt(coverArt);
 
@@ -45,20 +52,26 @@ public class SongService {
         String coverArtFullPath = fileStorageService.getCoverArtFullPath(coverArtFilename);
 
         // Set all metadata and embed cover art in a single operation (much faster)
-        mp3MetadataService.setAllMetadata(mp3FullPath, title, artist, featuredArtists, producer, null, 
+        mp3MetadataService.setAllMetadata(mp3FullPath, title, resolvedArtist, featuredArtists, producer, null, 
                                          null, null, coverArtFullPath);
 
         // Create song - store only filenames in database for consistency
-        Song song = new Song(title, artist, featuredArtists, producer, null, mp3Filename, coverArtFilename);
+        Song song = new Song(title, resolvedArtist, featuredArtists, producer, null, mp3Filename, coverArtFilename);
+        song.setArtistId(artistId);
         return songRepository.save(song);
     }
 
-    public Song updateSong(Long id, String title, String artist, String featuredArtists, String producer) {
+    public Song updateSong(Long id, String title, String artist, String featuredArtists, String producer, Long artistId) {
         Optional<Song> songOpt = songRepository.findById(id);
         if (songOpt.isPresent()) {
             Song song = songOpt.get();
             song.setTitle(title);
-            song.setArtist(artist);
+            if (artistId != null) {
+                song.setArtistId(artistId);
+                song.setArtist(artistService.resolveArtistName(artistId, artist));
+            } else if (song.getArtistId() == null) {
+                song.setArtist(artist);
+            }
             song.setFeaturedArtists(featuredArtists);
             song.setProducer(producer);
             return songRepository.save(song);
@@ -66,8 +79,26 @@ public class SongService {
         return null;
     }
 
-    public void deleteSong(Long id) {
-        songRepository.deleteById(id);
+    public List<Song> getSongsByArtistId(Long artistId) {
+        return songRepository.findByArtistId(artistId);
+    }
+
+    public boolean deleteSong(Long id) {
+        Optional<Song> songOpt = songRepository.findById(id);
+        if (songOpt.isPresent()) {
+            songRepository.delete(songOpt.get());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteSongForArtist(Long id, Long artistId) {
+        Optional<Song> songOpt = songRepository.findById(id);
+        if (songOpt.isPresent() && artistId != null && artistId.equals(songOpt.get().getArtistId())) {
+            songRepository.delete(songOpt.get());
+            return true;
+        }
+        return false;
     }
 
     public Song incrementViews(Long id) {

@@ -5,6 +5,7 @@ import com.ytnafrica.backend.model.Song;
 import com.ytnafrica.backend.repository.AlbumRepository;
 import com.ytnafrica.backend.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,10 @@ public class AlbumService {
     @Autowired
     private MP3MetadataService mp3MetadataService;
 
+    @Autowired
+    @Lazy
+    private ArtistService artistService;
+
     public List<Album> getAllAlbums() {
         return albumRepository.findAll();
     }
@@ -45,18 +50,21 @@ public class AlbumService {
 
     public Album createAlbumWithSongs(String title, String artist, MultipartFile coverArt,
                                       String[] songTitles, String[] songArtists, String[] songFeaturedArtists,
-                                      String[] songProducers, Integer[] songTrackNumbers, MultipartFile[] mp3Files) throws Exception {
+                                      String[] songProducers, Integer[] songTrackNumbers, MultipartFile[] mp3Files,
+                                      Long artistId) throws Exception {
+        String resolvedArtist = artistService.resolveArtistName(artistId, artist);
         // Store cover art
         String coverArtPath = fileStorageService.storeCoverArt(coverArt);
 
         // Create album
-        Album album = new Album(title, artist, coverArtPath);
+        Album album = new Album(title, resolvedArtist, coverArtPath);
+        album.setArtistId(artistId);
         album = albumRepository.save(album);
 
         // Process each song
         for (int i = 0; i < songTitles.length; i++) {
             String songTitle = songTitles[i];
-            String songArtist = songArtists[i];
+            String songArtist = artistService.resolveArtistName(artistId, songArtists[i]);
             String featuredArtists = (songFeaturedArtists != null && i < songFeaturedArtists.length) 
                     ? songFeaturedArtists[i] : null;
             String producer = songProducers[i];
@@ -76,6 +84,7 @@ public class AlbumService {
 
             // Create song - store only filename in database
             Song song = new Song(songTitle, songArtist, featuredArtists, producer, trackNumber, mp3Filename, album.getCoverArtPath());
+            song.setArtistId(artistId);
             song.setAlbum(album);
             song = songRepository.save(song);
 
@@ -115,19 +124,53 @@ public class AlbumService {
         return albumRepository.save(album);
     }
 
-    public Album updateAlbum(Long id, String title, String artist) {
+    public Album updateAlbum(Long id, String title, String artist, Long artistId) {
         Optional<Album> albumOpt = albumRepository.findById(id);
         if (albumOpt.isPresent()) {
             Album album = albumOpt.get();
             album.setTitle(title);
-            album.setArtist(artist);
-            return albumRepository.save(album);
+            if (artistId != null) {
+                album.setArtistId(artistId);
+                album.setArtist(artistService.resolveArtistName(artistId, artist));
+            } else if (album.getArtistId() == null) {
+                album.setArtist(artist);
+            }
+            album = albumRepository.save(album);
+
+            List<Song> tracks = songRepository.findByAlbumId(id);
+            for (Song track : tracks) {
+                track.setArtist(album.getArtist());
+                if (album.getArtistId() != null) {
+                    track.setArtistId(album.getArtistId());
+                }
+                songRepository.save(track);
+            }
+            album.setSongs(tracks);
+            return album;
         }
         return null;
     }
 
-    public void deleteAlbum(Long id) {
-        albumRepository.deleteById(id);
+    public List<Album> getAlbumsByArtistId(Long artistId) {
+        return albumRepository.findByArtistId(artistId);
+    }
+
+    public boolean deleteAlbum(Long id) {
+        Optional<Album> albumOpt = albumRepository.findById(id);
+        if (albumOpt.isPresent()) {
+            albumRepository.delete(albumOpt.get());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteAlbumForArtist(Long id, Long artistId) {
+        Optional<Album> albumOpt = albumRepository.findById(id);
+        if (albumOpt.isPresent() && artistId != null && artistId.equals(albumOpt.get().getArtistId())) {
+            albumRepository.delete(albumOpt.get());
+            return true;
+        }
+        return false;
     }
 }
 

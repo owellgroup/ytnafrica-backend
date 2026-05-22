@@ -1,5 +1,6 @@
 package com.ytnafrica.backend.service;
 
+import com.ytnafrica.backend.config.DataInitializer;
 import com.ytnafrica.backend.model.Admin;
 import com.ytnafrica.backend.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,15 +43,30 @@ public class AdminService {
         Optional<Admin> adminOpt = adminRepository.findById(id);
         if (adminOpt.isPresent()) {
             Admin admin = adminOpt.get();
-            admin.setEmail(email);
-            admin.setPassword(password);
+            if (admin.isSystemAdmin()) {
+                throw new IllegalStateException("System admin account cannot be edited");
+            }
+            if (email != null && !email.isBlank()) {
+                admin.setEmail(email);
+            }
+            if (password != null && !password.isBlank()) {
+                admin.setPassword(password);
+            }
             return adminRepository.save(admin);
         }
         return null;
     }
 
     public void deleteAdmin(Long id) {
+        Optional<Admin> adminOpt = adminRepository.findById(id);
+        if (adminOpt.isPresent() && adminOpt.get().isSystemAdmin()) {
+            throw new IllegalStateException("System admin account cannot be deleted");
+        }
         adminRepository.deleteById(id);
+    }
+
+    public boolean isSystemAdminEmail(String email) {
+        return DataInitializer.SYSTEM_ADMIN_EMAIL.equalsIgnoreCase(email);
     }
 }
 

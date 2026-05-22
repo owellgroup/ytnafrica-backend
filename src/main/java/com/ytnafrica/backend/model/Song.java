@@ -19,6 +19,9 @@ public class Song {
     @Column(nullable = false)
     private String artist;
 
+    @Column(name = "artist_id")
+    private Long artistId;
+
     @Column(name = "featured_artists")
     private String featuredArtists;
 
@@ -102,6 +105,14 @@ public class Song {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public Long getArtistId() {
+        return artistId;
+    }
+
+    public void setArtistId(Long artistId) {
+        this.artistId = artistId;
     }
 
     public String getFeaturedArtists() {

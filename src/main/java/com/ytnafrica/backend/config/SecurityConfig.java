@@ -8,6 +8,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
@@ -35,11 +36,18 @@ public class SecurityConfig {
         config.setAllowedOrigins(Arrays.asList(
                 "https://ytnafrica.owellgraphics.com", // deployed frontend
                 "http://localhost:8282",     // local backend dev
-                "https://mlmusik.com",     // frontend domain
-                "http://localhost:3000"      // local frontend dev port
+                "https://ytnafrica.live",     // frontend domain
+                "http://localhost:3000",     // local frontend dev port
+                "https://www.ytnafrica.live"      // Vite default port
         ));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(Arrays.asList("*"));
+        config.setExposedHeaders(Arrays.asList(
+                HttpHeaders.CONTENT_RANGE,
+                HttpHeaders.ACCEPT_RANGES,
+                HttpHeaders.CONTENT_LENGTH,
+                HttpHeaders.CONTENT_TYPE
+        ));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L); // Cache preflight requests for 1 hour
 

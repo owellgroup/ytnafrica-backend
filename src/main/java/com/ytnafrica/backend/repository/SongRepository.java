@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface SongRepository extends JpaRepository<Song, Long> {
     List<Song> findByAlbumId(Long albumId);
+    List<Song> findByArtistId(Long artistId);
     Optional<Song> findByShareToken(String shareToken);
 }
 

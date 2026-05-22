@@ -16,6 +16,9 @@ public class Admin {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "system_admin", nullable = false)
+    private boolean systemAdmin = false;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -63,6 +66,14 @@ public class Admin {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public boolean isSystemAdmin() {
+        return systemAdmin;
+    }
+
+    public void setSystemAdmin(boolean systemAdmin) {
+        this.systemAdmin = systemAdmin;
     }
 }
 

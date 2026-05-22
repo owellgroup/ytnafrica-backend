@@ -21,6 +21,9 @@ public class Album {
     @Column(nullable = false)
     private String artist;
 
+    @Column(name = "artist_id")
+    private Long artistId;
+
     @Column(name = "cover_art_path")
     private String coverArtPath;
 
@@ -74,6 +77,14 @@ public class Album {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public Long getArtistId() {
+        return artistId;
+    }
+
+    public void setArtistId(Long artistId) {
+        this.artistId = artistId;
     }
 
     public String getCoverArtPath() {

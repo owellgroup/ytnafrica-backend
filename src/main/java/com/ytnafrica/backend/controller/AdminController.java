@@ -57,18 +57,26 @@ public class AdminController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Admin> updateAdmin(@PathVariable Long id, @RequestBody Map<String, String> adminData) {
-        Admin admin = adminService.updateAdmin(id, adminData.get("email"), adminData.get("password"));
-        if (admin != null) {
-            return ResponseEntity.ok(admin);
+    public ResponseEntity<?> updateAdmin(@PathVariable Long id, @RequestBody Map<String, String> adminData) {
+        try {
+            Admin admin = adminService.updateAdmin(id, adminData.get("email"), adminData.get("password"));
+            if (admin != null) {
+                return ResponseEntity.ok(admin);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAdmin(@PathVariable Long id) {
-        adminService.deleteAdmin(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteAdmin(@PathVariable Long id) {
+        try {
+            adminService.deleteAdmin(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
+        }
     }
 }
 

@@ -35,13 +35,14 @@ public class SongController {
     public ResponseEntity<Map<String, Object>> uploadSingleTrack(
             @RequestParam("title") String title,
             @RequestParam("artist") String artist,
+            @RequestParam(value = "artistId", required = false) Long artistId,
             @RequestParam(value = "featuredArtists", required = false) String featuredArtists,
             @RequestParam("producer") String producer,
             @RequestParam("coverArt") MultipartFile coverArt,
             @RequestParam("mp3File") MultipartFile mp3File) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Song song = songService.createSingleTrack(title, artist, featuredArtists, producer, coverArt, mp3File);
+            Song song = songService.createSingleTrack(title, artist, featuredArtists, producer, coverArt, mp3File, artistId);
             response.put("success", true);
             response.put("message", "Single track uploaded successfully");
             response.put("song", song);
@@ -70,14 +71,21 @@ public class SongController {
         return ResponseEntity.ok(songService.getSongsByAlbum(albumId));
     }
 
+    @GetMapping("/artist/{artistId}")
+    public ResponseEntity<List<Song>> getSongsByArtist(@PathVariable Long artistId) {
+        return ResponseEntity.ok(songService.getSongsByArtistId(artistId));
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Song> updateSong(@PathVariable Long id, @RequestBody Map<String, String> songData) {
+    public ResponseEntity<Song> updateSong(@PathVariable Long id, @RequestBody Map<String, Object> songData) {
+        Long artistId = songData.get("artistId") != null ? Long.valueOf(songData.get("artistId").toString()) : null;
         Song song = songService.updateSong(
                 id,
-                songData.get("title"),
-                songData.get("artist"),
-                songData.get("featuredArtists"),
-                songData.get("producer")
+                (String) songData.get("title"),
+                (String) songData.get("artist"),
+                (String) songData.get("featuredArtists"),
+                (String) songData.get("producer"),
+                artistId
         );
         if (song != null) {
             return ResponseEntity.ok(song);
@@ -86,9 +94,16 @@ public class SongController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSong(@PathVariable Long id) {
-        songService.deleteSong(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteSong(
+            @PathVariable Long id,
+            @RequestParam(value = "artistId", required = false) Long artistId) {
+        boolean deleted = artistId != null
+                ? songService.deleteSongForArtist(id, artistId)
+                : songService.deleteSong(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/{id}/play")
